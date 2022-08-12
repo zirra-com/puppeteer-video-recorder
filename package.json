@@ -4,7 +4,8 @@
   "description": "This package creates a video of Puppeteer's page, using Chrome API screencast and ffmpeg",
   "main": "index.js",
   "scripts": {
-    "test": "cd ./tests; npm test"
+    "test": "cd ./tests; npm test",
+    "lint": "eslint . --fix"
   },
   "keywords": [
     "cast",
@@ -52,7 +53,18 @@
   "directories": {
     "test": "tests"
   },
-  "devDependencies": {},
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^15.3.2",
+    "eslint": "^8.21.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shaynet10/puppeteer-video-recorder.git"
