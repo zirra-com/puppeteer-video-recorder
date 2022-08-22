@@ -7,8 +7,8 @@ const verifyFolderExists = async (path) => {
 };
 
 const testGoogle = async () => {
-  const VIDEOS_PATH = `${process.cwd()}/videos`;
-  const IMAGES_PATH = `${process.cwd()}/videos/images`;
+  const VIDEOS_PATH = `${process.cwd()}/videos`; // работа внутри каталога
+  const IMAGES_PATH = `${process.cwd()}/videos/images`; // работа внутри каталога
   const pageKey = 'testGoogle';
   await verifyFolderExists(VIDEOS_PATH);
   await verifyFolderExists(IMAGES_PATH);

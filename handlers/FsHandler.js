@@ -1,4 +1,4 @@
-const { writeFile, readdir, access, mkdir } = require('fs').promises;
+const { writeFile, readdir, access, mkdir, unlink } = require('fs').promises;
 const { join } = require('path');
 
 const verifyFolderExists = async (path) => {
@@ -22,7 +22,7 @@ class FsHandler {
   }
 
   getFiles() {
-    return readdir(this.imagesPath);
+    return readdir(this.imagesPath); // чтение каталога
   }
 
   /**
@@ -37,7 +37,7 @@ class FsHandler {
   }
 
   getVideoFileName(date, stepIndex) {
-    return join(this.outputFolder, `${date.getTime()}-${stepIndex}.mp4`);
+    return join(this.outputFolder, `${date.getTime()}-step-${stepIndex}.mp4`);
   }
 }
 

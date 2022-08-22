@@ -61,7 +61,7 @@ const getStepData = (files, totalVideoTime, durations) => {
       duration = totalVideoTime - totalDuration;
     }
     data.push({
-      images,
+      images, // скриншоты
       // totalVideoTime may be longer than the sum of durations
       // all extra time goes to the last step
       duration,
@@ -71,6 +71,16 @@ const getStepData = (files, totalVideoTime, durations) => {
   }
   return data;
 };
+
+const duplicateGetStepData = (file, duration, step) => ({
+    images: file, // скриншоты
+    // totalVideoTime may be longer than the sum of durations
+    // all extra time goes to the last step
+    duration,
+    frameRate: Math.round((file.length / duration) * 1000 * 10) / 10,
+    step
+  });
+
 
 class PuppeteerVideoRecorder {
   /**
@@ -126,6 +136,14 @@ class PuppeteerVideoRecorder {
 
     const steps = getStepData(files, this.videoTime, durations?.length ? durations : [this.videoTime]);
     return Promise.all(steps.map((step) => this.createSingleVideo(step, date)));
+  }
+
+  async createStepVideo (duration, step) {
+    const files = await this.fsHandler.getFiles();
+    console.log('Total files created: ', files.length);
+    console.log('Total video length: ', duration);
+    console.log(await this.createSingleVideo(duplicateGetStepData(files, duration), new Date()))
+    return this.createSingleVideo(duplicateGetStepData(files, duration, step), new Date())
   }
 
   async createSingleVideo(stepData, date) {
