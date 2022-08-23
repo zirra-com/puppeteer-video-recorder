@@ -1,3 +1,3 @@
 module.exports = {
-    FsHandler: require('./FsHandler.js')
+  FsHandler: require('./FsHandler'),
 };

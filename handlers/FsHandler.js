@@ -1,49 +1,44 @@
-const { appendFile, mkdir, readdir, unlink } = require('fs').promises;
-const { openSync, closeSync, existsSync } = require('fs');
+const { writeFile, readdir, access, mkdir, unlink } = require('fs').promises;
 const { join } = require('path');
 
+const verifyFolderExists = async (path) => {
+  await access(path).catch(async () => mkdir(path));
+};
+
+// const clearImagesInPath = async (folderPath) => {
+//   console.log(`Removing files in ${folderPath}`);
+//   const files = await readdir(folderPath);
+//   await Promise.all(files.map((file) => unlink(join(folderPath, file))));
+//   console.log(`Removed all files in ${folderPath}`);
+// };
+
 class FsHandler {
-    async init(outputFolder) {
-        this.outputFolder = outputFolder;
-        this.videoFilename = join(this.outputFolder, Date.now() + '.mp4');
-        this.imagesPath = join(this.outputFolder, 'images');
-        this.imagesFilename = join(this.outputFolder, 'images.txt');
-        await this.verifyPathExists(this.outputFolder);
-        await this.verifyPathExists(this.imagesPath);
-        await this.createEmptyFile(this.imagesFilename, 'file');
-        await this.clearImagesInPath(this.imagesPath);
-    }
+  async init(outputFolder, imagesFolder) {
+    this.outputFolder = outputFolder;
+    this.imagesPath = imagesFolder;
+    await verifyFolderExists(outputFolder);
+    await verifyFolderExists(imagesFolder);
+    // await Promise.all([clearImagesInPath(this.outputFolder), clearImagesInPath(this.imagesPath)]);
+  }
 
-    createEmptyFile(filename) {
-        return closeSync(openSync(filename, 'w'));
-    }
+  getFiles() {
+    return readdir(this.imagesPath); // чтение каталога
+  }
 
-    createPath(pathToCreate, type = 'folder') {
-        if (type === 'folder') return mkdir(pathToCreate);
-        return this.createEmptyFile(pathToCreate);
-    }
+  /**
+   * Creates file 'images-N.txt' containing all the images for the step
+   * @param {*} images
+   * @param {*} stepIndex
+   */
+  async createImagesFile(images, stepIndex) {
+    const fileName = join(this.imagesPath, `images-${stepIndex}.txt`);
+    await writeFile(fileName, images.map((i) => `file '${join(this.imagesPath, i)}'`).join('\n'));
+    return fileName;
+  }
 
-    verifyPathExists(pathToVerify, type = 'folder') {
-    	return existsSync(pathToVerify) || this.createPath(pathToVerify, type);
-    }
-
-    appendToFile(filename, data) {
-        return appendFile(filename, data);
-    }
-
-    async clearImagesInPath(imagesPath) {
-        const files = await readdir(imagesPath);
-        console.log(`Removing files in ${imagesPath}`);
-        for (const file of files) {
-            const filename = join(imagesPath, file);
-            await unlink(filename);
-        }
-        console.log(`Removed all files in ${imagesPath}`);
-    }
-
-    async getFilesNumber() {
-        return (await readdir(this.imagesPath)).length;
-    }
+  getVideoFileName(date, stepIndex) {
+    return join(this.outputFolder, `${date.getTime()}-step-${stepIndex}.mp4`);
+  }
 }
 
 module.exports = FsHandler;
