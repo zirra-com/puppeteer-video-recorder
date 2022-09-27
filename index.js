@@ -86,7 +86,7 @@ class PuppeteerVideoRecorder {
   }
 
   /**
-   * Creates step videos by out of the screenshots split by the given number of steps with provided durations
+   * Creates step video out of the taken screenshots with provided duration
    * @param {number} duration - Step duration in ms
    * @param {number} step - step index
    * @returns
