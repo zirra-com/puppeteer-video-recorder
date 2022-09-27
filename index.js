@@ -34,7 +34,7 @@ const getFFMpegCommand = (imagesFilename, videoFilename, frameRate) =>
  * @returns Objects of steps with a list of files for each step
  */
 
-const duplicateGetStepData = (file, duration, step) => ({
+const getStepData = (file, duration, step) => ({
     images: file,
     // totalVideoTime may be longer than the sum of durations
     // all extra time goes to the last step
@@ -95,7 +95,7 @@ class PuppeteerVideoRecorder {
     const files = await this.fsHandler.getFiles();
     console.log('Total files created: ', files.length);
     console.log('Total video length: ', duration);
-    return this.createSingleVideo(duplicateGetStepData(files, duration, step), new Date())
+    return this.createSingleVideo(getStepData(files, duration, step), new Date())
   }
 
   async createSingleVideo(stepData, date) {
