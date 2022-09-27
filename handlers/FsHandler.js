@@ -1,16 +1,9 @@
-const { writeFile, readdir, access, mkdir, unlink } = require('fs').promises;
+const { writeFile, readdir, access, mkdir } = require('fs').promises;
 const { join } = require('path');
 
 const verifyFolderExists = async (path) => {
   await access(path).catch(async () => mkdir(path));
 };
-
-// const clearImagesInPath = async (folderPath) => {
-//   console.log(`Removing files in ${folderPath}`);
-//   const files = await readdir(folderPath);
-//   await Promise.all(files.map((file) => unlink(join(folderPath, file))));
-//   console.log(`Removed all files in ${folderPath}`);
-// };
 
 class FsHandler {
   async init(outputFolder, imagesFolder) {
@@ -18,11 +11,10 @@ class FsHandler {
     this.imagesPath = imagesFolder;
     await verifyFolderExists(outputFolder);
     await verifyFolderExists(imagesFolder);
-    // await Promise.all([clearImagesInPath(this.outputFolder), clearImagesInPath(this.imagesPath)]);
   }
 
   getFiles() {
-    return readdir(this.imagesPath); // чтение каталога
+    return readdir(this.imagesPath);
   }
 
   /**
