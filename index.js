@@ -34,12 +34,12 @@ const getFFMpegCommand = (imagesFilename, videoFilename, frameRate) =>
  * @returns Objects of steps with a list of files for each step
  */
 
-const getStepData = (file, duration, step) => ({
-    images: file,
+const getStepData = (files, duration, step) => ({
+    images: files,
     // totalVideoTime may be longer than the sum of durations
     // all extra time goes to the last step
     duration,
-    frameRate: Math.round((file.length / duration) * 1000 * 10) / 10,
+    frameRate: Math.round((files.length / duration) * 1000 * 10) / 10,
     step
   });
 
@@ -87,8 +87,8 @@ class PuppeteerVideoRecorder {
 
   /**
    * Creates step videos by out of the screenshots split by the given number of steps with provided durations
-   * @param {number[]} durations - array with the story screens with their durations in ms
-   * @param {number} step - step numbering
+   * @param {number} duration - Step duration in ms
+   * @param {number} step - step index
    * @returns
    */
   async createStepVideo (duration, step) {
