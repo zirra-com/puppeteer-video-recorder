@@ -31,6 +31,7 @@ const getFFMpegCommand = (imagesFilename, videoFilename, frameRate) =>
  * Splits the array of image file names by the steps
  * @param {string[]} files - image filenames list
  * @param {number} duration - step duration
+ * @param {number} step - step index
  * @returns Objects of steps with a list of files for each step
  */
 
