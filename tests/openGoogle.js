@@ -24,7 +24,8 @@ const testGoogle = async () => {
   await input.press('Enter');
   // await page.waitForNavigation({ waitUntil: 'domcontentloaded' });
   await recorder.stopScreenshots();
-  await recorder.createStepVideo(3000, 1);
+  // eslint-disable-next-line max-len
+  await recorder.createStepVideo(3000, 1); // create 3 sec video, because duration=3000(it's random time), 1 is step index
 
   await browser.close();
 };
@@ -35,7 +36,7 @@ const testPageWithDuration = async () => {
   const pageKey = 'fourSteps';
   await verifyFolderExists(VIDEOS_PATH);
   await verifyFolderExists(IMAGES_PATH);
-  const durations = 3000;
+  const duration = 3000;
   const browser = await puppeteer.launch({ headless: true });
   const page = (await browser.pages())[0];
   const recorder = new PuppeteerVideoRecorder(pageKey);
@@ -45,9 +46,9 @@ const testPageWithDuration = async () => {
   );
   // await page.waitForTimeout(100); // wait 0.1 sec for page load
   await recorder.startScreenshots();
-  await page.waitForTimeout(durations); // wait 3 sec and creating screenshots for video
+  await page.waitForTimeout(duration); // wait 3 sec and creating screenshots for video
   await recorder.stopScreenshots();
-  await recorder.createStepVideo(durations, 1); // create 3 sec video, because duration=3000, 1 is step index
+  await recorder.createStepVideo(duration, 1); // create 3 sec video, because duration=3000, 1 is step index
   await browser.close();
 };
 
