@@ -43,11 +43,11 @@ const testPageWithDuration = async () => {
   await page.goto(
     'https://tocking.zirra.com/stories/c231dead-129a-40e6-8c66-05c5df9232b3?subtype=image-and-text&step=1',
   );
-  // await page.waitForTimeout(100);
+  // await page.waitForTimeout(100); // wait 0.1 sec for page load
   await recorder.startScreenshots();
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(durations); // wait 3 sec and creating screenshots for video
   await recorder.stopScreenshots();
-  await recorder.createStepVideo(durations, 1);
+  await recorder.createStepVideo(durations, 1); // create 3 sec video, because duration=3000, 1 is step index
   await browser.close();
 };
 
