@@ -18,7 +18,6 @@ const testGoogle = async () => {
   await recorder.init(page, VIDEOS_PATH, IMAGES_PATH, pageKey);
   await page.goto('https://google.com');
   await recorder.startScreenshots();
-  // await page.waitForNavigation({ waitUntil: 'domcontentloaded'});
   const input = await page.$('input[name=q]');
   await input.type('puppeteer-mass-screenshots', { delay: 250 });
   await input.press('Enter');
@@ -44,7 +43,6 @@ const testPageWithDuration = async () => {
   await page.goto(
     'https://tocking.zirra.com/stories/c231dead-129a-40e6-8c66-05c5df9232b3?subtype=image-and-text&step=1',
   );
-  // await page.waitForTimeout(100); // wait 0.1 sec for page load
   await recorder.startScreenshots();
   await page.waitForTimeout(duration); // wait 3 sec and creating screenshots for video
   await recorder.stopScreenshots();
