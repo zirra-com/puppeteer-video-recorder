@@ -28,56 +28,19 @@ const getFFMpegCommand = (imagesFilename, videoFilename, frameRate) =>
   ].join(' ');
 
 /**
- * Gets the frame rate for the video (number_of_screenshots / record_time_in_s) rounded to decimals
- * @param {*} filesNumber
- * @param {*} recordTimeMs
- * @returns - the frequency of the screenshot generation (fps)
- */
-const getFrameRate = (filesNumber, recordTimeMs) => Math.round((filesNumber / recordTimeMs) * 1000 * 10) / 10;
-
-/**
  * Splits the array of image file names by the steps
  * @param {string[]} files - image filenames list
- * @param {number[]} durations - step durations list
- * @returns Array of steps with a list of files for each step (string[][])
+ * @param {number} duration - step duration
+ * @param {number} step - step index
+ * @returns Objects of steps with a list of files for each step
  */
-const getStepData = (files, totalVideoTime, durations) => {
-  let lastIndex = 0;
-  const data = [];
-  let totalDuration = 0;
-  let duration = 0;
-  for (let i = 0; i < durations.length; i++) {
-    let images;
-    if (i < durations.length - 1) {
-      const newIndex = lastIndex + Math.round((files.length * durations[i]) / totalVideoTime);
-      images = files.slice(lastIndex, newIndex);
-      lastIndex = newIndex;
-      duration = durations[i];
-      totalDuration += duration;
-    } else {
-      // to overcome the rounding errors of the previous iterations
-      // put all the remaining items into the last step
-      images = files.slice(lastIndex);
-      duration = totalVideoTime - totalDuration;
-    }
-    data.push({
-      images, // скриншоты
-      // totalVideoTime may be longer than the sum of durations
-      // all extra time goes to the last step
-      duration,
-      frameRate: getFrameRate(images.length, duration),
-      step: i,
-    });
-  }
-  return data;
-};
 
-const duplicateGetStepData = (file, duration, step) => ({
-    images: file, // скриншоты
+const getStepData = (files, duration, step) => ({
+    images: files,
     // totalVideoTime may be longer than the sum of durations
     // all extra time goes to the last step
     duration,
-    frameRate: Math.round((file.length / duration) * 1000 * 10) / 10,
+    frameRate: Math.round((files.length / duration) * 1000 * 10) / 10,
     step
   });
 
@@ -124,26 +87,16 @@ class PuppeteerVideoRecorder {
   }
 
   /**
-   * Creates videos out of the screenshots split by the given number of steps with provided durations
-   * @param {number[]} durations - array with the story screens with their durations in ms
+   * Creates step video out of the taken screenshots with provided duration
+   * @param {number} duration - Step duration in ms
+   * @param {number} step - step index
    * @returns
    */
-  async createVideos(durations) {
-    const files = await this.fsHandler.getFiles();
-    console.log('Total files created: ', files.length);
-    console.log('Total video length: ', this.videoTime);
-    const date = new Date();
-
-    const steps = getStepData(files, this.videoTime, durations?.length ? durations : [this.videoTime]);
-    return Promise.all(steps.map((step) => this.createSingleVideo(step, date)));
-  }
-
   async createStepVideo (duration, step) {
     const files = await this.fsHandler.getFiles();
     console.log('Total files created: ', files.length);
     console.log('Total video length: ', duration);
-    console.log(await this.createSingleVideo(duplicateGetStepData(files, duration), new Date()))
-    return this.createSingleVideo(duplicateGetStepData(files, duration, step), new Date())
+    return this.createSingleVideo(getStepData(files, duration, step), new Date())
   }
 
   async createSingleVideo(stepData, date) {
